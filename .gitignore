@@ -43,3 +43,84 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+
+android/key.properties
+android/app/key.jks
+
+
+# Flutter/Dart stuff
+.dart_tool/
+.packages
+.pub-cache/
+build/
+.idea/
+.flutter-plugins
+.flutter-plugins-dependencies
+.melos_tool/
+
+# iOS
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Pods/
+ios/.symlinks/
+ios/Runner.xcworkspace/
+ios/DerivedData/
+ios/.flutter-plugins
+ios/.flutter-plugins-dependencies
+ios/Flutter/App.framework
+ios/Flutter/engine/
+
+# macOS
+macos/Flutter/ephemeral/
+macos/Pods/
+macos/.symlinks/
+macos/Flutter/Flutter.framework
+macos/Flutter/App.framework
+
+# Android
+android/.gradle/
+android/captures/
+android/app/build/
+android/local.properties
+android/.idea/
+
+# Web
+web/.dart_tool/
+web/build/
+
+# VS Code
+.vscode/
+
+# Xcode
+*.xcworkspace
+*.xcuserstate
+*.xcuserdata
+*.xcodeproj/project.xcworkspace/
+*.xcodeproj/xcuserdata/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+android/fastlane/report.xml
+android/fastlane/Preview.html
+android/fastlane/screenshots/**/*.png
+
+# CI/CD sensitive
+**/fastlane/service-account.json
+**/fastlane/*.key
+*.jks
+*.keystore
+*.p8
+*.pem
+*.cer
+
+# Logs & others
+*.log
+*.lock
+*.iml
+*.swp
+.DS_Store
+.env
+.env.*

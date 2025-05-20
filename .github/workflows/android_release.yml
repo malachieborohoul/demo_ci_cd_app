@@ -1,36 +1,42 @@
-name: Android CI/CD Release
+name: Android Release
 
 on:
   push:
     branches:
-      - main
+      - main  # Déclenchement du workflow quand on push sur la branche main
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
+  build:
+    name: Build & Deploy Android App
+    runs-on: ubuntu-latest  # Machine Ubuntu dans GitHub Actions
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout the code
+        uses: actions/checkout@v3  # Récupère le code du repo
 
-      - name: Setup Flutter
+      - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.3'
+          flutter-version: '3.29.3'  # ✅ Ta version exacte
+          channel: 'stable'
 
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Decode Google Play JSON key
-        env:
-          SUPPLY_JSON_KEY: ${{ secrets.SUPPLY_JSON_KEY }}
+      - name: Decode service account JSON
         run: |
-          echo "$SUPPLY_JSON_KEY" | base64 -d > android/fastlane/service-account.json
+          echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}" | base64 --decode > android/fastlane/service-account.json
+        # ⬆️ On utilise une clé secrète encodée en base64, qu'on décode ici
+
+      - name: Build appbundle
+        run: flutter build appbundle --release
+
+      - name: Install Ruby and Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
 
       - name: Deploy to Play Store
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: |
-          cd android
-          fastlane release
+        working-directory: android
+        run: bundle install && fastlane supply
+        # ⬆️ Lance fastlane pour publier sur Google Play

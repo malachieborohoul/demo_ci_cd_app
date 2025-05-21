@@ -44,8 +44,9 @@ android {
             keyAlias = System.getenv("KEY_ALIAS")
             keyPassword = System.getenv("KEY_PASSWORD")
             storePassword = System.getenv("STORE_PASSWORD")
-            val keystoreFile = rootProject.file("app/key.jks")
-            storeFile = keystoreFile
+            storeFile = keystoreProperties["storeFile"]?.let { file(it) }
+            println("Keystore path: ${keystoreProperties["storeFile"]}")
+            println("Alias: ${keystoreProperties["keyAlias"]}")
         }
     }
     buildTypes {

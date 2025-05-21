@@ -12,11 +12,6 @@ val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key.properties")
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-}else {
-    keystoreProperties["storePassword"] = System.getenv("STORE_PASSWORD") ?: ""
-    keystoreProperties["keyPassword"] = System.getenv("KEY_PASSWORD") ?: ""
-    keystoreProperties["keyAlias"] = System.getenv("KEY_ALIAS") ?: ""
-    keystoreProperties["storeFile"] = System.getenv("KEYSTORE_FILE") ?: ""
 }
 
 android {

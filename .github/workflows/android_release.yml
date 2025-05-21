@@ -36,7 +36,7 @@ jobs:
 
       - name: Decode service account
         run: |
-          echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}" | base64 --decode > android/fastlane/service-account.json
+          echo "${{ secrets.SUPPLY_JSON_KEY }}" | base64 --decode > android/fastlane/service-account.json
 
       - name: Build appbundle
         run: flutter build appbundle --release

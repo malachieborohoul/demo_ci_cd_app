@@ -50,4 +50,4 @@ jobs:
         working-directory: android
         run: |
           bundle install
-          fastlane supply
+          bundle exec fastlane upload_play_store

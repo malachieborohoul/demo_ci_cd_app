@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout the code
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up Flutter
@@ -23,29 +23,24 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Create key.properties
-        run: |
-          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
-          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
-          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
-          echo "storeFile=android/app/key.jks" >> android/key.properties
-
-      - name: Decode and save keystore file
+      - name: Decode keystore
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/key.jks
 
-      - name: Decode service account JSON
+      - name: Decode service account
         run: |
           echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}" | base64 --decode > android/fastlane/service-account.json
 
       - name: Build appbundle
         run: flutter build appbundle --release
 
-      - name: Install Ruby and Fastlane
+      - name: Setup Ruby & Fastlane
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.1'
 
       - name: Deploy to Play Store
         working-directory: android
-        run: bundle install && fastlane supply
+        run: |
+          bundle install
+          fastlane supply

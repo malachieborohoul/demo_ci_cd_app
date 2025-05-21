@@ -44,7 +44,7 @@ android {
             keyAlias = System.getenv("KEY_ALIAS")
             keyPassword = System.getenv("KEY_PASSWORD")
             storePassword = System.getenv("STORE_PASSWORD")
-            val keystoreFile = rootProject.file("android/app/key.jks")
+            val keystoreFile = rootProject.file("app/key.jks")
             storeFile = keystoreFile
         }
     }

@@ -16,7 +16,7 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties["storePassword"] = System.getenv("STORE_PASSWORD") ?: ""
     keystoreProperties["keyPassword"] = System.getenv("KEY_PASSWORD") ?: ""
     keystoreProperties["keyAlias"] = System.getenv("KEY_ALIAS") ?: ""
-    keystoreProperties["storeFile"] = System.getenv("KEYSTORE_FILE") ?: ""
+    keystoreProperties["storeFile"] = System.getenv("KEYSTORE_BASE64") ?: ""
 }
 
 android {

@@ -16,7 +16,7 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties["storePassword"] = System.getenv("STORE_PASSWORD") ?: ""
     keystoreProperties["keyPassword"] = System.getenv("KEY_PASSWORD") ?: ""
     keystoreProperties["keyAlias"] = System.getenv("KEY_ALIAS") ?: ""
-    keystoreProperties["storeFile"] = System.getenv("KEYSTORE_BASE64") ?: ""
+    keystoreProperties["storeFile"] = System.getenv("KEYSTORE_FILE") ?: ""
 }
 
 android {
@@ -48,7 +48,7 @@ android {
         create("release") {
             keyAlias = keystoreProperties["keyAlias"] as String
             keyPassword = keystoreProperties["keyPassword"] as String
-            storeFile = file(keystoreProperties["storeFile"] as String)
+            storeFile = file("android/app/key.jks")
             storePassword = keystoreProperties["storePassword"] as String
         }
     }

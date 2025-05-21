@@ -3,40 +3,62 @@ name: Android Release
 on:
   push:
     branches:
-      - main  # Déclenchement du workflow quand on push sur la branche main
+      - main
 
 jobs:
   build:
     name: Build & Deploy Android App
-    runs-on: ubuntu-latest  # Machine Ubuntu dans GitHub Actions
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v3  # Récupère le code du repo
+        uses: actions/checkout@v3
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.3'  
+          flutter-version: '3.29.3'
           channel: 'stable'
 
       - name: Install dependencies
         run: flutter pub get
 
+      # 🔐 Recrée le fichier key à partir du secret encodé en base64
+      - name: Recreate key.jks from secret
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/key.jks
+
+      # 📝 Crée dynamiquement le fichier key.properties
+      - name: Create key.properties file
+        run: |
+          cat > android/key.properties <<EOF
+          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          keyAlias=${{ secrets.KEY_ALIAS }}
+          storeFile=key.jks
+          EOF
+
+      # 🔐 Décode le service account pour Fastlane
       - name: Decode service account JSON
         run: |
+          mkdir -p android/fastlane
           echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}" | base64 --decode > android/fastlane/service-account.json
-        # ⬆️ On utilise une clé secrète encodée en base64, qu'on décode ici
 
+      # 🏗️ Build de l'App Bundle
       - name: Build appbundle
         run: flutter build appbundle --release
 
+      # 🚀 Setup Ruby et Fastlane
       - name: Install Ruby and Fastlane
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.1'
 
-      - name: Deploy to Play Store
+      - name: Install fastlane dependencies
         working-directory: android
-        run: bundle install && fastlane supply
-        # ⬆️ Lance fastlane pour publier sur Google Play
+        run: bundle install
+
+      # 📦 Publie sur le Play Store
+      - name: Deploy to Google Play
+        working-directory: android
+        run: bundle exec fastlane supply

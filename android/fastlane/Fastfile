@@ -12,20 +12,39 @@
 
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
+# default_platform(:android)
+
+# platform :android do
+#   desc "Déploiement sur le Play Store - track internal"
+#   lane :release do
+#     build_android_app(
+#       keystore_path: "app/key.jks",
+#       keystore_password: ENV["KEYSTORE_PASSWORD"],
+#       key_alias: ENV["KEY_ALIAS"],
+#       key_password: ENV["KEY_PASSWORD"]
+#     )
+#     upload_to_play_store(
+#       track: "internal",
+#       json_key: "fastlane/service-account.json"
+#     )
+#   end
+# end
+
 default_platform(:android)
 
 platform :android do
-  desc "Déploiement sur le Play Store - track internal"
-  lane :release do
-    build_android_app(
-      keystore_path: "app/key.jks",
-      keystore_password: ENV["KEYSTORE_PASSWORD"],
-      key_alias: ENV["KEY_ALIAS"],
-      key_password: ENV["KEY_PASSWORD"]
-    )
-    upload_to_play_store(
-      track: "internal",
-      json_key: "fastlane/service-account.json"
+  desc "Déploie l'AAB sur le Play Store (interne, alpha ou production)"
+  lane :upload_play_store do
+    supply(
+      json_key: "fastlane/service-account.json",
+      package_name: "com.bsm.demo_ci_cd_app",
+      aab: "../build/app/outputs/bundle/release/app-release.aab",
+      track: "internal", # ou alpha, beta, production
+      release_status: "draft",
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
     )
   end
 end

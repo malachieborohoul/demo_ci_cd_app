@@ -23,42 +23,29 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # 🔐 Recrée le fichier key à partir du secret encodé en base64
-      - name: Recreate key.jks from secret
+      - name: Create key.properties
+        run: |
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=android/app/key.jks" >> android/key.properties
+
+      - name: Decode and save keystore file
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/key.jks
 
-      # 📝 Crée dynamiquement le fichier key.properties
-      - name: Create key.properties file
-        run: |
-          cat > android/key.properties <<EOF
-          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
-          keyPassword=${{ secrets.KEY_PASSWORD }}
-          keyAlias=${{ secrets.KEY_ALIAS }}
-          storeFile=key.jks
-          EOF
-
-      # 🔐 Décode le service account pour Fastlane
       - name: Decode service account JSON
         run: |
-          mkdir -p android/fastlane
           echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}" | base64 --decode > android/fastlane/service-account.json
 
-      # 🏗️ Build de l'App Bundle
       - name: Build appbundle
         run: flutter build appbundle --release
 
-      # 🚀 Setup Ruby et Fastlane
       - name: Install Ruby and Fastlane
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.1'
 
-      - name: Install fastlane dependencies
+      - name: Deploy to Play Store
         working-directory: android
-        run: bundle install
-
-      # 📦 Publie sur le Play Store
-      - name: Deploy to Google Play
-        working-directory: android
-        run: bundle exec fastlane supply
+        run: bundle install && fastlane supply

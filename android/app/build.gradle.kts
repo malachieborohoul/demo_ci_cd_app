@@ -41,14 +41,15 @@ android {
 
     signingConfigs {
         create("release") {
-            keyAlias = System.getenv("KEY_ALIAS")
-            keyPassword = System.getenv("KEY_PASSWORD")
-            storePassword = System.getenv("STORE_PASSWORD")
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+            storePassword = keystoreProperties["storePassword"] as String
             storeFile = keystoreProperties["storeFile"]?.let { file(it) }
-            println("Keystore path: ${keystoreProperties["storeFile"]}")
-            println("Alias: ${keystoreProperties["keyAlias"]}")
+            println("🔐 Keystore path: ${keystoreProperties["storeFile"]}")
+            println("🔐 Alias: ${keystoreProperties["keyAlias"]}")
         }
     }
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
